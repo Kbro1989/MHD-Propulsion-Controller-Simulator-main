@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: MHD Propulsion Controller \u0026 Simulator",
+  "description": "An interactive real-time control console and Hardware-in-the-Loop (HIL) simulator for the POG2 Magnetohydrodynamic Propulsion FPGA-based architecture.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

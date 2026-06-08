@@ -1,0 +1,349 @@
+
+================================================================================
+POG2-MHD-PROP-001 Rev 1.0
+CONSUMABLES · CONSTANTS · OUTPUTS
+Master Reference Sheet | 2026-06-05
+================================================================================
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 1: CONSUMABLES — Materials Depleted During Operation
+════════════════════════════════════════════════════════════════════════════════
+
+1.1 DRY ICE (Solid CO₂)
+    Mass:              10,000 kg magazine (60 cartridges, 0.3m × 1.5m each)
+    Phase change:      Sublimation at 194.7 K (-78.5°C)
+    Enthalpy:          571 kJ/kg
+    Density:           1,560 kg/m³
+    Insulation:        50 mm aerogel blanket (λ = 0.015 W/m·K)
+    Heat leak:         ~2 kW total (negligible vs. 118 kW active load)
+    Control:           Resistive heating elements (electronic throttle)
+
+    CONSUMPTION RATES:
+    • IDLE (0 kts):           0 kg/hr
+    • STEALTH (5 kts):        745 kg/hr (thermal) + 6,912 kg per 6-hour stealth (transpiration)
+    • TRANSIT (15 kts):       745 kg/hr (thermal only)
+    • LIMP MODE:              372 kg/hr (50% thermal load)
+    • PURGE:                  Variable (flood + blast cycle)
+
+1.2 SALT HYDRATE (Glauber's Salt Matrix)
+    Mass:              279 kg bellows bed
+    Composition:       Na₂SO₄·10H₂O + 6% cross-linked polyacrylamide + 5% borax
+    Phase change:      305.4 K (32.4°C)
+    Enthalpy:          254 kJ/kg
+    Thermal capacity:  279 kg × 254 kJ/kg = 70,866 kJ
+    Cycle life:        ≥ 5,000 complete hydration/dehydration cycles
+
+    CONSUMPTION:       Cyclic (reversible). Not permanently depleted.
+    Spike protection:  118 kW × 600 s = 70,800 kJ (10-minute full-load protection)
+
+    BYPRODUCT:         139 kg distilled water of hydration (emergency reserve)
+
+1.3 SEAWATER
+    Source:            Unlimited (open-loop ocean intake)
+    Conductivity:      5.0 S/m
+    Density:           1,025 kg/m³
+    Kinematic viscosity: 1.2 × 10⁻⁶ m²/s
+    Surface tension:     0.072 N/m (vs. CO₂)
+
+    CONSUMPTION:       Continuous flow through thruster channel
+    • IDLE:            0.5 m/s circulation (minimal)
+    • STEALTH:         2.57 m/s (5 knots)
+    • TRANSIT:         7.72 m/s (15 knots)
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 2: CONSTANTS — Fixed Physical & Design Parameters
+════════════════════════════════════════════════════════════════════════════════
+
+2.1 FLUID PROPERTIES
+    ρ_seawater          = 1,025 kg/m³
+    ν_seawater          = 1.2 × 10⁻⁶ m²/s
+    σ_seawater          = 5.0 S/m
+    γ_seawater/CO₂      = 0.072 N/m
+    ρ_CO₂(194K,1.3atm)  = 3.59 kg/m³
+    μ_CO₂(194K)         = 1.01 × 10⁻⁵ Pa·s
+
+2.2 THERMAL PROPERTIES
+    h_sub_CO₂           = 571 kJ/kg
+    h_fus_Na₂SO₄·10H₂O  = 254 kJ/kg
+    T_sub_CO₂           = 194.7 K
+    T_phase_salt        = 305.4 K (32.4°C)
+    α_SiC               = 1.2 × 10⁻⁴ m²/s
+    λ_aerogel           = 0.015 W/(m·K)
+
+2.3 MAGNETIC PROPERTIES
+    B_Halbach           = 2.3 T
+    B_r_NdFeB           = 1.48 T
+    T_Curie_NdFeB       = 380°C
+    μ_r_MuMetal         = 80,000
+    B_sat_SiSteel       = 2.0 T
+
+2.4 GEOMETRIC CONSTANTS
+    Electrode active area       = 1.0 m²
+    Chordwise segmentation      = 5 segments × 0.1 m each
+    Spanwise length             = 1.0 m
+    Foam thickness              = 15 mm
+    Choke membrane thickness    = 1.0 mm
+    Manifold span               = 1.0 m
+    Manifold heights (Seg 1→5)  = 40.00, 28.34, 19.12, 11.45, 5.10 mm
+
+2.5 MATERIAL PROPERTIES
+    E_Al₂O₃             = 370 GPa
+    E_SiC               = 410 GPa
+    α_Al₂O₃             = 8.1 × 10⁻⁶ /K
+    α_SiC               = 4.0 × 10⁻⁶ /K
+    Foam porosity ε     = 0.60 (60%)
+    Foam pore size      = 20 ppi (~1,000 μm nominal)
+    K_foam              = 1.5 × 10⁻⁸ m²
+    β_foam              = 450 m⁻¹
+    K_choke             = 1.0 × 10⁻¹¹ m²
+
+2.6 ELECTRICAL CONSTANTS
+    V_bus               = 5,000 V DC
+    I_nominal           = 1,880 A
+    I_limp              = 5,435 A (50% shed)
+    P_shaft             = 9.4 MW @ 50% η
+    R_electrode         = 0.1–0.5 mΩ
+    J_nominal           = 2,174 A/m²
+    J_limp              = 1,812 A/m² (active segments)
+    Cable cross-section = 75 mm² Cu
+    XLPE wall           = 8.0 mm
+    XLPE rating         = 15 kV continuous
+
+2.7 CONTROL CONSTANTS
+    Tick duration       = 640 ms
+    CRIT timeout        = 47 ticks = 30.1 seconds
+    GhostSplat horizon  = 3 ticks = 1.92 seconds
+    Thermal lag τ       = 0.9375 seconds
+    Gate ramp           = 8.2 ± 0.1 ms
+    Desat response      = < 2.2 μs
+    PID Kp              = 1.2
+    PID Ki              = 0.4
+    Anti-windup clamp   = ±0.5 atm·s
+
+2.8 BOUNDARY CONDITIONS
+    T_SALT_START        = 305 K
+    T_SALT_RESET        = 280 K
+    T_CRIT_LIMIT        = 320 K
+    P_plenum_target     = 1.3 ± 0.05 atm
+    Choke ΔP            = 0.15 atm = 15,000 Pa
+    Capillary ΔP        = 288 Pa
+    Foam ΔP             = 1.11 Pa
+
+2.9 SPEED REGIMES
+    u* @ 15 knots       = 0.277 m/s
+    u* @ 5 knots        = 0.09 m/s
+    Re_L @ 15 knots     = 6.43 × 10⁶
+    τ_w @ 15 knots      = 78.5 Pa
+    τ_w @ 5 knots       = 8.2 Pa
+    C_f @ 15 knots      = 0.00257
+
+2.10 ACOUSTIC CONSTANTS
+    Bubble resonance    = 6.5 kHz (500 μm bubbles)
+    Sonar detection band = 10 Hz – 2 kHz
+    Idle signature      = < 20 dB re 1 μPa @ 1m
+    Stealth signature   = 35–45 dB @ 5 kts
+    Transit signature   = 45–55 dB @ 15 kts
+
+2.11 MAGNETIC CONSTANTS
+    Earth ambient field = ~50,000 nT
+    Target ext. field   = < 50 nT
+    Shielding SE_total  = ~65 dB
+    MAD detection range = 200–500 m (unshielded)
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 3: OUTPUTS — What the System Produces
+════════════════════════════════════════════════════════════════════════════════
+
+3.1 PRIMARY OUTPUT: THRUST
+    Target density:      10,000 N/m²
+    Transit:             100% thrust (10,000 N/m²)
+    Stealth:             20–35% thrust (2,000–3,500 N/m²)
+    Limp Mode:           75% thrust retention @ 50% power (7,500 N/m²)
+
+    Thrust vector:       Streamwise, symmetric (checkerboard shed preserves centerline)
+
+3.2 ACOUSTIC SIGNATURE OUTPUT
+    IDLE:                < 20 dB (ambient ocean floor)
+    STEALTH:             35–45 dB @ 5 knots (broadband turbulent flow only)
+    TRANSIT:             45–55 dB @ 15 knots
+
+    Characteristics:
+    • Zero tonal components (10 Hz – 2 kHz)
+    • No blade rate, no gearbox mesh, no pump harmonics, no cryocooler cyclic noise
+    • CO₂ microbubbles resonate at 6.5 kHz (above sonar band)
+    • Classified as biological/geological ambient beyond 500 m
+
+3.3 MAGNETIC SIGNATURE OUTPUT
+    External field:      < 50 nT
+    Shielding:           ~65 dB attenuation via 3-stage cascade
+    MAD status:          Invisible at tactical depths
+
+    Shield cascade:
+    • Stage 1: 0.8 mm Si-steel flux diverter (2.3 T → 0.5 T)
+    • Stage 2: 1.5 mm aerated composite isolation gap
+    • Stage 3: 3× 0.5 mm mu-metal plies (0.5 T → < 50 nT)
+
+3.4 THERMAL STATE OUTPUTS
+    Bus bar temperature:     < 305 K (nominal)
+    Plenum pressure:         1.3 ± 0.05 atm
+    Salt hydration fraction: 0.0–1.0 (real-time monitored)
+    Dry ice remaining:       kg (real-time gravimetric)
+    Thermal lag status:      τ = 0.9375 s (natural low-pass filter)
+
+3.5 TELEMETRY OUTPUTS
+    Hexagram state vector:   6-bit binary (64 states)
+    Predicted temperature:   T_(t+3) in Kelvin (1.92 s horizon)
+    Fault flags:             46 reserved fault/recovery states
+    Sensor array:            6-channel payload (current, temp grid, pressure, hydration, speed, wall pressure)
+    Event log:               D1 event sourcing (audit trail)
+
+3.6 POWER RECOVERY OUTPUT
+    CO₂ expander:            ~5 kW (thermal loop turbine)
+    Carnot efficiency:         30.7% (194 K → 280 K)
+    Exergy recovery:         Waste heat converted to shaft power
+    Status:                  Optional integration (Phase 2)
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 4: WASTE STREAMS & BYPRODUCTS
+════════════════════════════════════════════════════════════════════════════════
+
+4.1 CO₂ EXHAUST
+    Form:        Sublimated gas (194.7 K, 1.0–1.3 atm)
+    Destination: Bilge vent or recompression plant
+    Phase 2:     Supercritical CO₂ closed-loop (optional)
+    Mass flow:   0.32 kg/s (stealth) to 0.995 kg/s (transit, if transpiration active)
+
+4.2 CARBONATE SCALE
+    Composition: NiCO₃ / CoCO₃ (from DSA electrode passivation)
+    Formation:   During PURGE cycle (CO₂ flood, 0.3 atm overpressure)
+    Dissolution: Sacrificial — dissolves in free-stream seawater during transit
+    Function:    Secondary corrosion barrier during initial high-speed phase
+    Lifetime:    Minutes to hours depending on seawater saturation state
+
+4.3 ELECTROLYTIC GAS
+    Composition: H₂ + O₂ (from seawater splitting at anode)
+    Minimization: CO₂ transpiration blanket suppresses oxygen evolution reaction
+    Collection:  Purge cycle captures residual gas
+    Hazard:      Minimal (suppressed by design, vented safely)
+
+4.4 THERMAL REJECTION
+    Path:        118 kW @ transit → SiC backing plate → dry ice → salt → seawater
+    Character:   Cascaded, not dumped. Each tier extracts exergy before rejection.
+    Ultimate sink: Ambient seawater at 280 K (unlimited capacity)
+
+4.5 DISTILLED WATER
+    Source:      Salt hydrate dehydration (Na₂SO₄·10H₂O → Na₂SO₄ + 10H₂O)
+    Quantity:    139 kg total (279 kg salt × 50% water fraction)
+    Purity:      Distilled (no chloride, no dissolved oxygen)
+    Uses:
+    • Emergency fresh water reserve (139 liters)
+    • Electrode rinse during purge cycle
+    • Humidity control in CO₂ plenum (30–40% RH, prevents static discharge)
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 5: STATE-TO-OUTPUT MAPPING
+════════════════════════════════════════════════════════════════════════════════
+
+STATE        BINARY   OUTPUT SUMMARY
+────────────────────────────────────────────────────────────────────────────────
+IDLE         000000   Zero thrust. Zero signature. Zero consumption. System dormant.
+                      All contactors open. Dry ice sealed. Salt at ambient.
+
+STEALTH      110100   20–35% thrust. 35–45 dB acoustic. Transpiration active.
+                      CO₂ micro-bubbles at 0.32 kg/(m²·s). Salt buffer armed.
+                      Dry ice at minimum sublimation (maintain 1.3 atm).
+
+TRANSIT      111000   100% thrust. 45–55 dB acoustic. No transpiration.
+                      Full 118 kW thermal load on dry ice. Salt cyclic.
+                      Electrodes bare (no gas blanket). Seawater full flow.
+
+TR_SALT      111010   100% thrust + salt buffer active. Handles transient spikes.
+                      Dry ice normal rate. Pre-staged for thermal surge.
+
+TR_CRIT      111011   100% thrust + max dry ice + max salt. Thermal emergency.
+                      47-tick countdown to LIMP_MODE. All buffers at maximum.
+
+LIMP_MODE    111001   75% thrust @ 50% power. Checkerboard segment shed.
+                      372 kg/hr dry ice (conservation). 5,435 A current.
+                      Recovery possible if T_bus < 305 K and resources allow.
+
+PURGE        001001   Zero thrust. CO₂ flood. Carbonate passivation.
+                      Electrode regeneration cycle. 4-step: isolate → drain → blast → exhaust.
+
+ST_CRIT      110111   Stealth thrust + max thermal emergency. Same 47-tick guard.
+                      Less common than TR_CRIT (lower baseline thermal load).
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 6: QUICK REFERENCE — NUMBERS AT A GLANCE
+════════════════════════════════════════════════════════════════════════════════
+
+MASS:
+  Total system:          11,500 kg (2.3% of 500-ton displacement)
+  Dry ice magazine:      10,000 kg (60 cartridges)
+  Salt hydrate bellows:  279 kg
+  Cartridge structure:   1,000 kg (aluminum)
+  Insulation + racks:    500 kg
+
+POWER:
+  Shaft power:           9.4 MW @ 50% η
+  Bus voltage:           5,000 V DC
+  Nominal current:       1,880 A
+  Limp mode current:     5,435 A (50% shed)
+  Thermal load:          118 kW @ transit
+  Inductive kick:        0.177 J
+
+THERMAL:
+  Lag:                   0.94 s
+  Salt threshold:        305 K
+  CRIT limit:            320 K
+  Plenum pressure:       1.3 ± 0.05 atm
+  Choke drop:            0.15 atm (15,000 Pa)
+
+FLUID:
+  Halbach field:         2.3 T
+  Total current:         10,870 A
+  Current density:       2,174 A/m²
+  CO₂ flux @ 5 kts:      0.32 kg/(m²·s)
+  Wall shear @ 15 kts:   78.5 Pa
+  Wall shear @ 5 kts:    8.2 Pa
+
+CONTROL:
+  Tick:                  640 ms
+  CRIT timeout:          47 ticks (30.1 s)
+  GhostSplat horizon:    3 ticks (1.92 s)
+  States:                64 (18 base + 46 fault/recovery)
+  Yao lines:             6
+
+SIGNATURE:
+  Idle acoustic:         < 20 dB
+  Stealth acoustic:      35–45 dB @ 5 kts
+  Transit acoustic:      45–55 dB @ 15 kts
+  Magnetic external:     < 50 nT
+  Shielding:             ~65 dB
+  Bubble resonance:      6.5 kHz
+
+════════════════════════════════════════════════════════════════════════════════
+DOCUMENT CONTROL
+════════════════════════════════════════════════════════════════════════════════
+
+Document ID:        POG2-MHD-PROP-001-CCO
+Revision:           1.0
+Date:               2026-06-05
+Author:             POG2 Sovereign Systems Engineering
+Status:             AUTHORIZED FOR PROCUREMENT
+Classification:     Engineering Archive — Build Reference
+Distribution:       Manufacturing, Procurement, Integration Test, Field Operations
+
+Related Documents:
+  • POG2-MHD-PROP-001 Rev 1.0 — Complete System Specification (841 lines)
+  • POG2-MHD-PROP-001 Rev 1.0 — System Schematic (6-zone visual)
+  • POG2-MHD-PROP-001 Rev 1.0 — Consumables/Constants/Outputs (this document)
+
+Change Log:
+  Rev 1.0 (2026-06-05): Initial release. All consumables, constants, and outputs
+                         catalogued. State-to-output mapping verified. Quick reference
+                         consolidated. No open items.
+
+════════════════════════════════════════════════════════════════════════════════
+END OF REFERENCE SHEET
+════════════════════════════════════════════════════════════════════════════════

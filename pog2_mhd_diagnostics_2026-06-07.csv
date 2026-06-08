@@ -1,0 +1,4 @@
+Timestamp,Tick,Subsystem,Level,Message,Snapshot
+"06:08:14","0","SYSTEM","SUCCESS","VHDL Bitstream loaded to PL logic successfully. PL CLK = 250.00 MHz.","Temp: 300.0K | Pres: 1.30atm | Current: 1880A"
+"06:08:14","0","SECURE_LOCK","SUCCESS","AXI4-Lite register file mapped. Replay security guard initiated with challenge nonce (101).","Temp: 300.0K | Pres: 1.30atm | Current: 1880A"
+"06:08:14","0","INTERLOCK_SEQUENCE","INFO","Relay sequence hardware controller initialized. Complementary interlocks ARMED.","Temp: 300.0K | Pres: 1.30atm | Current: 1880A"

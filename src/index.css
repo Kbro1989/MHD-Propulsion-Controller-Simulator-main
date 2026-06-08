@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom palette overrides for absolute compliance with High Density Theme */
+  --color-slate-950: #0D0F12;      /* Midnight theme core black */
+  --color-slate-900: #16191E;      /* Midnight card/box gray-black */
+  --color-slate-850: rgba(255, 255, 255, 0.05); /* very subtle white transparent divider */
+  --color-slate-800: rgba(255, 255, 255, 0.08); /* clean wireframe level white border */
+  --color-slate-700: rgba(255, 255, 255, 0.15); /* secondary border levels */
+  --color-slate-650: rgba(255, 255, 255, 0.25);
+  --color-slate-500: rgba(255, 255, 255, 0.40); /* text-white/40 equivalent label coloring */
+  --color-slate-400: #94A3B8;      /* medium high contrast label coloring */
+  --color-slate-350: #E2E8F0;      /* main high readability paragraph slate style text */
+  --color-slate-250: #F1F5F9;      /* pure off-white indicator highlight */
+  --color-slate-100: #FFFFFF;
+
+  /* Accent overrides */
+  --color-emerald-950: #0D1F1A;
+  --color-emerald-900: rgba(34, 197, 94, 0.15);
+  --color-emerald-800: rgba(34, 197, 94, 0.25);
+  --color-emerald-500: #22C55E;    /* Dynamic green indicator matching theme's pass status */
+  --color-emerald-400: #4ADE80;
+
+  --color-cyan-950: #0B1E28;
+  --color-cyan-900: rgba(56, 189, 248, 0.15);
+  --color-cyan-400: #38BDF8;       /* Primary blue tracking accents */
+
+  --color-amber-950: rgba(249, 115, 22, 0.15);
+  --color-amber-900: rgba(249, 115, 22, 0.25);
+  --color-amber-500: #F97316;      /* Orange phase track color indicators */
+  --color-amber-400: #FB923C;
+
+  --color-red-950: rgba(239, 68, 68, 0.2);
+  --color-red-500: #EF4444;        /* Critical shutdown error status color indicators */
+  --color-red-400: #F87171;
+}
+
+body {
+  background-color: #0D0F12 !important;
+  color: #E2E8F0 !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.theme-blueprint {
+  --color-slate-950: #020b1e;      /* Royal blue background background */
+  --color-slate-900: #04163a;      /* Dynamic royal blue cards/panels */
+  --color-slate-850: rgba(56, 189, 248, 0.22); /* bright cyan grid border outlines */
+  --color-slate-800: rgba(56, 189, 248, 0.40); /* dynamic high contract cyan wireframe */
+  --color-slate-700: rgba(56, 189, 248, 0.55);
+  --color-slate-650: rgba(56, 189, 248, 0.70);
+  --color-slate-500: #38bdf8;       /* Neon high contrast labels */
+  --color-slate-400: #7dd3fc;       /* Neon light high contrast labels */
+  --color-slate-350: #e0f2fe;       /* Ice blue text paragraph readability style */
+  --color-slate-250: #ffffff;
+  
+  background-color: #020b1e !important;
+  color: #e0f2fe !important;
+}
+
+.theme-blueprint body {
+  background-color: #020b1e !important;
+  color: #e0f2fe !important;
+}
+
+/* Custom scrollbars to keep high density widgets clean */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0D0F12;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Custom micro elements to emulate precision oscilloscope lines */
+.precision-line {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 8px 100%;
+}
+.grid-blueprint {
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+@keyframes slide-in-tr {
+  0% {
+    transform: translate3d(120%, -30px, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-tr {
+  animation: slide-in-tr 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

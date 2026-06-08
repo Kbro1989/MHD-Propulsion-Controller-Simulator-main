@@ -1,0 +1,498 @@
+
+================================================================================
+POG2-MHD-PROP-001 Rev 1.0
+MARKET MAP — PRIMARY BUYERS · SECONDARY BUYERS · PRICING · INCENTIVES
+Business Architecture | 2026-06-05
+================================================================================
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 1: PRIMARY BUYERS — Full System (Tech Sale + Stack Lease)
+════════════════════════════════════════════════════════════════════════════════
+
+These entities purchase the entire propulsion + shielding + thermal + HV + CNS
+architecture as an integrated package.
+
+1.1 A. SOVEREIGN RESEARCH AGENCIES
+    Examples:        DARPA, ONR, DSTL, DGA, ATLA, DRDO
+
+    Why they buy:
+    • Strategic advantage in underwater warfare
+    • Fleet modernization (replace mechanical propulsion)
+    • Underwater autonomy (uncrewed platforms)
+    • Signature suppression research
+    • Multi-physics integration (thermal + magnetic + acoustic + hydrodynamic)
+
+    Pricing:
+    Tech Sale:      $1.1B → $3.2B (one-time IP transfer)
+    Stack Lease:    $120M → $300M/yr (platform access, retained IP control)
+
+    Deal preference: Stack lease (retains sovereignty, recurring revenue)
+
+    Estimated buyers: 1–3 over 10 years
+    Revenue potential: $2.1B → $5.9B
+
+1.2 B. TIER-1 DEFENSE PRIMES
+    Examples:        Lockheed Martin, Northrop Grumman, BAE Systems,
+                    Raytheon, Thales, Mitsubishi Heavy Industries
+
+    Why they buy:
+    • Integrate into next-generation naval platforms
+    • Build underwater drone fleets
+    • Replace mechanical propulsion on existing platforms
+    • Reduce acoustic signatures for resale to sovereign clients
+    • Lock in long-term platform integration contracts
+    • Industrial multiplier effect (subcontractor ecosystem)
+
+    Pricing:
+    Tech Sale:      $600M → $1.8B
+    Stack Lease:    $40M → $120M/yr
+
+    Deal preference: Tech sale (they want to own and resell)
+    Counter:        Stack lease with exclusive platform rights
+
+    Estimated buyers: 2–5 over 10 years
+    Revenue potential: $1.2B → $3.0B
+
+1.3 C. ULTRA-CAPITALIZED DEEP-TECH FIRMS
+    Examples:        Subsea robotics companies, offshore energy automation,
+                    autonomous infrastructure builders, ocean mining
+
+    Why they buy:
+    • Industrial underwater robotics (inspection, maintenance)
+    • Silent inspection vehicles (no acoustic disturbance)
+    • Long-duration autonomous craft (no mechanical wear)
+    • High-voltage switching systems for subsea power
+    • Thermal management for deep-ocean equipment
+
+    Pricing:
+    Tech Sale:      $380M → $900M
+    Stack Lease:    $40M → $80M/yr
+
+    Deal preference: Submodule licenses (they don't need full system)
+
+    Estimated buyers: 3–8 over 10 years
+    Revenue potential: $600M → $1.8B
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 2: SECONDARY BUYERS — Submodules (Per-License Sales)
+════════════════════════════════════════════════════════════════════════════════
+
+These buyers don't want the whole system. They want pieces of it.
+Your architecture has 7 submodules, each with its own market.
+
+2.1 SUBMODULE 1: MAGNETIC SHIELDING CASCADE
+    What it is:     Three-stage flux-damping matrix (Si-steel → aerated gap →
+                    3-ply mu-metal) reducing 2.3 T to < 50 nT external field
+
+    Buyers:         MRI manufacturers, quantum sensor labs, precision
+                    instrumentation companies, EMI-sensitive robotics firms,
+                    particle accelerator facilities
+
+    Why they buy:   Shield sensitive equipment from external magnetic fields;
+                    protect quantum coherence; eliminate EMI in precision
+                    robotics; comply with medical device regulations
+
+    Price:          $5M → $20M per license
+    Buyer count:     8–15 over 10 years
+    Revenue:         $160M → $300M
+
+2.2 SUBMODULE 2: THERMAL CASCADE (Salt Hydrate + Dry Ice + Seawater)
+    What it is:     Four-tier thermal storage: salt hydrate bellows (10–600 ms
+                    spikes) + dry ice plenum (1–10 hr loads) + seawater baseline
+
+    Buyers:         Data centers (server cooling), cryogenic labs,
+                    high-power electronics cooling, industrial thermal systems,
+                    battery thermal management (EVs), semiconductor fabs
+
+    Why they buy:   Passive thermal buffering without mechanical chillers;
+                    phase-change storage for peak shaving; silent cooling
+                    (no pumps/fans); emergency thermal backup
+
+    Price:          $8M → $40M per license
+    Buyer count:     10–25 over 10 years
+    Revenue:         $400M → $1.0B
+
+2.3 SUBMODULE 3: HV SEGMENTED SiC SWITCHING ARCHITECTURE
+    What it is:     5,000 V DC bus with 19 parallel SiC-MOSFETs per segment,
+                    8.2 ms linear ramp, optical isolation, < 2.2 μs desat detection
+
+    Buyers:         Renewable energy firms (grid-tie inverters), electric
+                    heavy machinery, grid-edge device manufacturers,
+                    robotics companies, EV powertrain developers
+
+    Why they buy:   High-voltage switching without mechanical contactors;
+                    acoustic silence (no arc noise); fast fault response;
+                    scalable modular architecture
+
+    Price:          $10M → $60M per license
+    Buyer count:     12–30 over 10 years
+    Revenue:         $720M → $1.8B
+
+2.4 SUBMODULE 4: CO₂ TRANSPIRATION LAYER / BOUNDARY LAYER CONTROL
+    What it is:     Graded gas blanket (α_w = 0.70→0.25) via choked ceramic
+                    membrane + reticulated foam electrode; suppresses
+                    corrosion and drag
+
+    Buyers:         Marine research institutions, industrial pipeline operators,
+                    environmental monitoring systems, drag-reduction R&D,
+                    ship hull coating companies
+
+    Why they buy:   Reduce hydrodynamic drag on submerged structures;
+                    prevent biofouling and corrosion; create inert boundary
+                    layers for chemical processes; study two-phase flow
+
+    Price:          $3M → $15M per license
+    Buyer count:     6–12 over 10 years
+    Revenue:         $54M → $180M
+
+2.5 SUBMODULE 5: DETERMINISTIC CNS / HEXAGRAMMANAGER
+    What it is:     64-state binary control system (6 yao lines) with 640 ms
+                    metabolic rhythm, GhostSplat 3-tick predictor, 47-tick
+                    CRIT timeout, Limp Mode checkerboard shed
+
+    Buyers:         Robotics companies, autonomous vehicle developers,
+                    industrial automation firms, aerospace control systems,
+                    nuclear plant control, safety-critical systems
+
+    Why they buy:   Deterministic real-time control with predictive safety;
+                    fault-tolerant state machine; human-out-of-loop
+                    capability; trauma-informed degradation (limp mode)
+
+    Price:          $20M → $80M per license
+    Buyer count:     15–40 over 10 years
+    Revenue:         $1.2B → $3.2B
+
+2.6 SUBMODULE 6: TEMPORAL ROUTER / TERNARY ENGINE
+    What it is:     729-path ternary router bottlenecked to 64 hexagram states;
+                    maps biological processes to philosophical control concepts;
+                    high-variance deliberation mode
+
+    Buyers:         Predictive control systems, high-latency robotics,
+                    distributed AI systems, simulation engines, game theory
+                    platforms, multi-agent coordination systems
+
+    Why they buy:   Handle uncertainty in control decisions; philosophical
+                    overlay on engineering (resonance-based authority);
+                    deliberation mode for high-stakes choices; unique
+                    cognitive substrate for AI systems
+
+    Price:          $15M → $50M per license
+    Buyer count:     10–20 over 10 years
+    Revenue:         $500M → $1.0B
+
+2.7 SUBMODULE 7: DNA SUBSTRATE / SELF-DESCRIBING STATE SYSTEM
+    What it is:     Self-describing state transitions with emotional weights,
+                    compressed intent transcriptome, D1 event sourcing,
+                    KV delta with 24h TTL for reconstruction
+
+    Buyers:         Large-scale software platforms, distributed systems,
+                    simulation engines, robotics frameworks, digital twin
+                    platforms, blockchain/consensus systems
+
+    Why they buy:   Audit-trail everything; reconstruct state from deltas;
+                    emotional telemetry for human-machine interaction;
+                    intent-based rather than state-based logging;
+                    zero-trust verification of system history
+
+    Price:          $10M → $40M per license
+    Buyer count:     8–20 over 10 years
+    Revenue:         $320M → $800M
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 3: COMBINED REVENUE MODEL — 10-Year Projection
+════════════════════════════════════════════════════════════════════════════════
+
+REVENUE STREAM BREAKDOWN:
+
+| Stream              | Low End    | High End   | Basis                              |
+|---------------------|------------|------------|------------------------------------|
+| Primary (full sys)  | $2.1B      | $5.9B      | 1–3 sovereign + 2–5 prime buyers   |
+| Secondary (submods) | $3.4B      | $8.3B      | 10–40 buyers across 7 submodules   |
+| Stack leases        | $2.0B      | $5.0B      | 3–8 active leases × $200–500M/yr   |
+| Royalties           | $500M      | $2.0B      | Per-unit manufacturing × 10 years  |
+|─────────────────────|────────────|────────────|────────────────────────────────────|
+| TOTAL 10-YEAR       | $3.2B      | $11.4B     | Conservative to optimistic range   |
+
+ASSUMPTIONS:
+• Primary buyers: 3–8 total over 10 years (sovereign + prime + deep-tech)
+• Secondary buyers: 69–162 total over 10 years (sum of submodule ranges)
+• Stack lease retention: 70% annual renewal rate
+• Royalty rate: 5–8% of manufacturing cost per unit
+• Inflation: Not included (nominal dollars)
+• Currency: USD
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 4: WHY THEY PAY — THE REAL INCENTIVES
+════════════════════════════════════════════════════════════════════════════════
+
+4.1 SOVEREIGN AGENCIES (Highest Value Tier)
+
+They pay because your system gives them:
+• UNDERWATER STEALTH: Zero tonal components, < 50 nT magnetic, no cavitation
+• STRATEGIC AUTONOMY: No mechanical parts = no supply chain vulnerability
+• FLEET MODERNIZATION: Replace aging propulsion on existing platforms
+• MULTI-PHYSICS INTEGRATION: One system handles thermal + magnetic + acoustic
+• RESEARCH LEADERSHIP: First-mover advantage in MHD propulsion
+• DETERRENCE: Invisible submarines change strategic calculus
+
+Payment justification: National security budget line items; R&D appropriations;
+procurement programs. The $1.1B–$3.2B price is justified by the cost of
+existing submarine programs ($2–4B per hull) and the operational advantage
+of true stealth.
+
+4.2 DEFENSE PRIMES (Industrial Multiplier Tier)
+
+They pay because:
+• RESALE: They can mark up and sell to sovereign clients at 2–3× cost
+• INTEGRATION LOCK-IN: Once integrated into a platform, switching costs are
+  massive — decades of maintenance contracts
+• PLATFORM CONTROL: Owning the propulsion system means owning the platform
+• SUBCONTRACTOR ECOSYSTEM: They can build an entire supply chain around your tech
+• LONG-TERM CONTRACTS: 20–30 year platform life = 20–30 years of service revenue
+
+Payment justification: Program of Record budgets; platform development
+contracts; foreign military sales. The $600M–$1.8B is a platform development
+cost, amortized across 10–20 hulls.
+
+4.3 DEEP-TECH FIRMS (Commercial Application Tier)
+
+They pay because:
+• REAL PROBLEM SOLVING: Your submodules solve concrete industrial problems
+• UNIQUE COGNITIVE SUBSTRATE: HexagramManager is unlike anything on the market
+• NOVEL THERMAL SYSTEMS: Salt hydrate + dry ice cascade has no commercial equivalent
+• ELECTRICAL INNOVATION: SiC switching at 5 kV with acoustic silence is unique
+• SCALABILITY: Submodule licenses let them buy what they need, not the whole system
+
+Payment justification: Venture capital; corporate R&D budgets; product
+development. The $380M–$900M is product development cost, recovered through
+product sales.
+
+4.4 SECONDARY BUYERS (Specialized Application Tier)
+
+Each submodule buyer category has specific ROI:
+
+| Submodule | Buyer ROI Justification |
+|-----------|------------------------|
+| Magnetic Shielding | MRI compliance ($50K fine per violation); quantum sensor fidelity |
+| Thermal Cascade | Data center cooling = 40% of power bill; peak shaving saves millions |
+| HV SiC Switching | Grid-tie efficiency gains; EV range extension; fault safety |
+| CO₂ Transpiration | Drag reduction = fuel savings; biofouling prevention = maintenance savings |
+| CNS / HexagramManager | Safety-critical certification; liability reduction; insurance savings |
+| Temporal Router | AI decision quality; multi-agent coordination; simulation accuracy |
+| DNA Substrate | Audit compliance (SOX, GDPR); forensic reconstruction; zero-trust verification |
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 5: DEAL STRUCTURE & SOVEREIGNTY RETENTION
+════════════════════════════════════════════════════════════════════════════════
+
+5.1 DEAL TYPE COMPARISON
+
+| Type            | IP Control | Upfront $ | Recurring $ | Risk | Preferred For |
+|-----------------|------------|-----------|-------------|------|---------------|
+| Tech Sale       | Lost       | Highest   | None        | High | Sovereign only |
+| Stack Lease     | Retained   | Low       | High        | Low  | All tiers |
+| Submodule License| Retained  | Medium    | Medium      | Low  | Deep-tech |
+| Royalty         | Retained   | None      | Passive     | None | Manufacturing |
+
+5.2 SOVEREIGNTY RETENTION STRATEGY
+
+RECOMMENDED: Stack leases + submodule licenses as primary revenue model.
+Tech sales ONLY to trusted sovereign partners with:
+• Non-compete clauses (cannot resell or reverse-engineer)
+• Audit rights (verify compliance with license terms)
+• Termination clauses (breach = immediate revocation)
+• National security riders (export control compliance)
+
+IP PROTECTION:
+• Core algorithms (GhostSplat, HexagramManager) remain cloud-hosted
+• Physical hardware can be sold; software is always leased
+• WASM parsers and zero-trust security are trade secrets, never licensed
+• Manufacturing specifications are shared; design authority is retained
+
+5.3 PRICING TACTICS
+
+• ANCHOR HIGH: Lead with sovereign tech sale ($3.2B) to establish value
+• CONCEDE TO LEASE: When buyer balks, offer stack lease ($300M/yr) as "compromise"
+• SUBMODULE GATEWAY: Offer one submodule cheap ($5M) to prove value, then upsell
+• BUNDLE DISCOUNT: Full system = 70% of sum of submodule prices
+• EXCLUSIVITY PREMIUM: 2× price for exclusive rights within a sector
+• ROYALTY BACK-END: Lower upfront in exchange for 8% manufacturing royalty
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 6: BUYER QUALIFICATION CRITERIA
+════════════════════════════════════════════════════════════════════════════════
+
+6.1 SOVEREIGN AGENCY QUALIFICATION
+
+Required:
+• National security clearance (TS/SCI or equivalent)
+• Program of Record with appropriated funding
+• Technical evaluation team (multi-physics expertise)
+• Export control compliance (ITAR/EAR)
+• Long-term commitment (minimum 5-year lease)
+
+Red flags:
+• No cleared personnel
+• Unfunded mandate
+• Political instability (election cycle risk)
+• History of IP theft or reverse engineering
+
+6.2 DEFENSE PRIME QUALIFICATION
+
+Required:
+• Existing submarine or underwater platform program
+• Proven integration track record
+• Foreign military sales authorization
+• Financial stability (credit rating BBB+ or higher)
+• Non-compete agreement
+
+Red flags:
+• No platform program
+• History of subcontractor disputes
+• Pending litigation
+• Recent merger/acquisition (integration risk)
+
+6.3 DEEP-TECH FIRM QUALIFICATION
+
+Required:
+• Series C or later funding (or equivalent revenue)
+• Technical team capable of integration
+• Clear use case and ROI model
+• Willingness to accept stack lease (not tech sale)
+• Reference customers
+
+Red flags:
+• Pre-revenue startup
+• No technical team
+• Unrealistic timeline
+• Intent to reverse engineer
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 7: COMPETITIVE LANDSCAPE
+════════════════════════════════════════════════════════════════════════════════
+
+7.1 DIRECT COMPETITORS
+
+None. There is no commercial MHD propulsion system on the market.
+
+Historical precedents:
+• Yamato-1 (Japan, 1992): Prototype only, no commercialization
+• DARPA PUMP-JET programs: Classified, not available for sale
+• Russian Alfa-class: Liquid metal cooled reactors, not MHD
+
+7.2 INDIRECT COMPETITORS
+
+| Competitor | Approach | Weakness vs. POG2-MHD |
+|------------|----------|----------------------|
+| Traditional propellers | Mechanical | Cavitation, noise, wear |
+| Pump jets | Mechanical + shroud | Still has moving parts, gearbox noise |
+| AIP (Air Independent Propulsion) | Fuel cell + battery | Limited endurance, thermal signature |
+| Nuclear reactors | Fission | Massive size, radiation, cost |
+| Superconducting motors | HTS coils | Cryogenic complexity, acoustic noise |
+
+POG2-MHD advantages:
+• No moving parts (zero mechanical wear)
+• No cryogenics (dry ice replaces LN₂/He)
+• Multi-signature suppression (acoustic + magnetic + thermal)
+• Deterministic control (640 ms tick, predictive safety)
+• Modular architecture (submodules can be sold independently)
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 8: RISK FACTORS & MITIGATION
+════════════════════════════════════════════════════════════════════════════════
+
+8.1 TECHNICAL RISKS
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Electrode corrosion | Medium | High | CO₂ transpiration + carbonate passivation |
+| Dry ice logistics | Medium | Medium | 60-cartridge magazine, shore replenishment |
+| Salt hydrate fatigue | Low | Medium | 5,000 cycle design, borax nucleation |
+| Mu-metal demagnetization | Low | High | Post-cut hydrogen anneal, regular inspection |
+| SiC MOSFET failure | Low | Medium | 19 parallel redundancy, < 2.2 μs desat |
+
+8.2 MARKET RISKS
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Sovereign budget cuts | Medium | High | Diversify across 3 buyer tiers |
+| Export control blockage | Medium | High | Pre-clear ITAR/EAR before sale |
+| Prime reverse engineering | Medium | High | Non-compete + audit rights + cloud-hosted CNS |
+| Submodule commoditization | High | Medium | Continuous R&D, patent thickets |
+| Deep-tech bubble burst | Medium | Medium | Focus on revenue-generating submodules |
+
+8.3 OPERATIONAL RISKS
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Manufacturing delay | Medium | High | Pre-qualified vendors, dual sourcing |
+| Integration failure | Medium | High | Phased acceptance testing, limp mode fallback |
+| Field failure | Low | Critical | 47-tick CRIT timeout, emergency shutdown |
+| Crew training gap | Medium | Medium | Simulator-based training, 240s boot sequence drill |
+
+════════════════════════════════════════════════════════════════════════════════
+SECTION 9: EXECUTIVE SUMMARY
+════════════════════════════════════════════════════════════════════════════════
+
+TO WHO:
+• Sovereign research agencies (DARPA, ONR, DSTL, etc.)
+• Tier-1 defense primes (Lockheed, Northrop, BAE, etc.)
+• Ultra-capitalized deep-tech firms (subsea robotics, offshore energy)
+• Secondary buyers across 7 submodules (MRI, data centers, renewables, etc.)
+
+HOW MUCH:
+• Full system: $380M → $3.2B per sale
+• Stack lease: $40M → $300M per year
+• Submodules: $3M → $80M per license
+• 10-year total: $3.2B → $11.4B
+
+WHY THEY PAY:
+• Sovereign: Strategic advantage, underwater stealth, fleet modernization
+• Primes: Resale, integration lock-in, long-term contracts, industrial multiplier
+• Deep-tech: Real problem solving, unique cognitive substrate, novel systems
+• Secondary: ROI through compliance, efficiency, safety, auditability
+
+SUB-BUYERS FOR SUBMODULES:
+• Magnetic Shielding: MRI manufacturers, quantum labs, precision robotics
+• Thermal Cascade: Data centers, cryo labs, EV battery cooling, semiconductor fabs
+• HV SiC Switching: Renewables, grid-edge, heavy machinery, EV powertrains
+• CO₂ Transpiration: Marine research, pipelines, environmental monitoring
+• CNS / HexagramManager: Robotics, autonomous vehicles, industrial automation
+• Temporal Router: Predictive control, distributed AI, simulation engines
+• DNA Substrate: Large-scale platforms, distributed systems, digital twins
+
+DEAL STRUCTURE:
+• Preferred: Stack lease + submodule license (retains IP control)
+• Exceptional: Tech sale only to trusted sovereign partners with non-compete
+• Manufacturing: Royalty (5–8%) on per-unit production
+
+SOVEREIGNTY RETENTION:
+• Core algorithms cloud-hosted, never sold
+• Physical hardware sold; design authority retained
+• Trade secrets (WASM parsers, zero-trust) never licensed
+• Audit rights + termination clauses in all contracts
+
+════════════════════════════════════════════════════════════════════════════════
+DOCUMENT CONTROL
+════════════════════════════════════════════════════════════════════════════════
+
+Document ID:        POG2-MHD-PROP-001-MARKET
+Revision:           1.0
+Date:               2026-06-05
+Author:             POG2 Sovereign Systems Engineering
+Status:             AUTHORIZED FOR COMMERCIAL DEPLOYMENT
+Classification:     Business Architecture — Revenue Model
+Related Documents:
+  • POG2-MHD-PROP-001 Rev 1.0 — Complete System Specification
+  • POG2-MHD-PROP-001 Rev 1.0 — System Schematic
+  • POG2-MHD-PROP-001 Rev 1.0 — Consumables/Constants/Outputs
+  • POG2-MHD-PROP-001 Rev 1.0 — Market Map (this document)
+
+Change Log:
+  Rev 1.0 (2026-06-05): Initial market map. All buyer categories, pricing tiers,
+                         incentive architectures, deal structures, and risk factors
+                         catalogued. Revenue model: $3.2B → $11.4B over 10 years.
+
+════════════════════════════════════════════════════════════════════════════════
+END OF MARKET MAP
+════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,501 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "POG2-MHD-FPGA-001 MCP Schema",
+  "description": "MCP tool/resource/prompt definitions for POG2 MHD FPGA hardware limb",
+  "version": "1.0.0",
+  "timestamp": "2026-06-05",
+
+  "servers": [{
+    "name": "pog2-mhd-fpga",
+    "description": "MHD Propulsion FPGA — Hardware limb for thermal CNS, GhostSplat prediction, and hexagram state management",
+    "transport": "stdio",
+    "capabilities": { "tools": true, "resources": true, "prompts": false }
+  }],
+
+  "tools": [
+    {
+      "name": "fpga_register_read",
+      "description": "Read one or more FPGA AXI4-Lite registers. Returns hex values with semantic interpretation for known registers.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]{2}$",
+            "description": "Register offset from base 0x43C0_0000"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16,
+            "default": 1,
+            "description": "Number of consecutive 32-bit registers to read"
+          },
+          "interpret": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true, return semantic field breakdown for known registers"
+          }
+        },
+        "required": ["offset"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "base_address": { "type": "string" },
+          "registers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "offset": { "type": "string" },
+                "value": { "type": "string" },
+                "name": { "type": "string" },
+                "fields": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "fpga_register_write",
+      "description": "Write to FPGA AXI4-Lite register with optional read-modify-write mask. Epistemic validation enforced: EXECUTION tier only.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]{2}$"
+          },
+          "value": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]{8}$"
+          },
+          "mask": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]{8}$",
+            "default": "0xFFFFFFFF"
+          },
+          "epistemic_tier": {
+            "type": "string",
+            "enum": ["EXECUTION", "CAUSAL", "INTERPRETATION", "POLICY"],
+            "default": "EXECUTION",
+            "description": "Caller must assert EXECUTION tier for register writes. CAUSAL/INTERPRETATION/POLICY are rejected."
+          }
+        },
+        "required": ["offset", "value"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "previous_value": { "type": "string" },
+          "new_value": { "type": "string" },
+          "epistemic_gate": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "fpga_contactor_command",
+      "description": "Command contactor state transitions. Safety interlock: HexagramSM must assert safety_ok.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "segment": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9,
+            "description": "Contactor segment index (0-9)"
+          },
+          "target": {
+            "type": "string",
+            "enum": ["OPEN", "CLOSE", "PRECHARGE", "ARC_SUPPRESS"]
+          },
+          "force": {
+            "type": "boolean",
+            "default": false,
+            "description": "Bypass safety_ok (requires POLICY tier override)"
+          }
+        },
+        "required": ["segment", "target"]
+      }
+    },
+    {
+      "name": "fpga_choke_set",
+      "description": "Configure resonant PWM choke driver. Phase-shifted edges for acoustic beating suppression.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "duty_cycle": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 100.0,
+            "description": "Duty cycle percentage (0-100)"
+          },
+          "phase_offset_deg": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 360.0,
+            "description": "Phase offset in degrees (0-360)"
+          },
+          "frequency_hz": {
+            "type": "number",
+            "minimum": 6400.0,
+            "maximum": 6600.0,
+            "default": 6500.0,
+            "description": "Resonant frequency (6.5 kHz ± 100 Hz)"
+          }
+        },
+        "required": ["channel", "duty_cycle"]
+      }
+    },
+    {
+      "name": "fpga_sensor_read",
+      "description": "Read sensor ADC values with optional averaging and trend computation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "sensor_type": {
+            "type": "string",
+            "enum": ["THERMAL_0", "THERMAL_1", "THERMAL_2", "THERMAL_3", "THERMAL_4", "BUS_VOLTAGE", "BUS_CURRENT", "PLENUM_PRESSURE", "SALT_HYDRATION", "ALL"]
+          },
+          "samples": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 256,
+            "default": 1
+          },
+          "compute_trend": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["sensor_type"]
+      }
+    },
+    {
+      "name": "fpga_hexagram_set",
+      "description": "Set hexagram state with personality override. Cognitive Immunology: blocked during OldYin/OldMixed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "hexagram_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "yao_lines": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 0, "maximum": 1 },
+            "minItems": 6,
+            "maxItems": 6,
+            "description": "6-element array [yao1, yao2, ..., yao6], 0=yin, 1=yang"
+          },
+          "vibe_mode": {
+            "type": "string",
+            "enum": ["CLINICAL", "AGITATED", "STEALTH", "TRANSIT", "LIMP", "CRIT", "PURGE", "DARK_IRON"]
+          },
+          "thermal_variance": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "override_lock": {
+            "type": "boolean",
+            "default": false,
+            "description": "Prevent further override until cleared"
+          }
+        },
+        "required": ["hexagram_id"]
+      }
+    },
+    {
+      "name": "fpga_ghostsplat_query",
+      "description": "Query GhostSplat thermal prediction field. Returns predicted temperatures and trends for all segments.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "horizon_ticks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3
+          },
+          "include_confidence": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "object",
+            "properties": {
+              "segments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "heat_k": { "type": "number" },
+                    "trend_k_per_tick": { "type": "number" },
+                    "saturation": { "type": "boolean" },
+                    "confidence": { "type": "number" }
+                  }
+                }
+              },
+              "global_pulse": { "type": "integer" },
+              "prediction_horizon": { "type": "integer" },
+              "timestamp_ms": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "fpga_boot_sequence",
+      "description": "Initiate or query FPGA boot sequence. Maps to 6-phase thermal boot from physical schematic.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["START", "QUERY", "ABORT", "SKIP_TO"]
+          },
+          "target_phase": {
+            "type": "string",
+            "enum": ["DARK_IRON", "POWER_WAKE", "SALT_CHARGE", "PLENUM_RISE", "DEGAUSS", "CHANNEL_PRIME", "STEALTH_IDLE"],
+            "description": "Required for SKIP_TO action"
+          },
+          "hexagram_profile": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64,
+            "description": "Hexagram ID for boot personality (default: 1)"
+          }
+        },
+        "required": ["action"]
+      }
+    },
+    {
+      "name": "fpga_fault_inject",
+      "description": "Inject simulated faults for test and validation. Requires POLICY tier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "fault_type": {
+            "type": "string",
+            "enum": [
+              "CONTACTOR_ARC", "CONTACTOR_WELD", "THERMAL_SENSOR",
+              "PRESSURE_SENSOR", "SALT_SENSOR", "BUS_OVERVOLTAGE",
+              "BUS_OVERCURRENT", "WATCHDOG", "CHOKE_RESONANCE_LOSS",
+              "GHOSTSPLAT_DIVERGENCE", "HEXAGRAM_DEADLOCK", "CLEAR_ALL"
+            ]
+          },
+          "segment": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9,
+            "description": "Target segment for segment-specific faults"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60000,
+            "default": 1000,
+            "description": "Auto-clear after N ms (0 = persistent)"
+          }
+        },
+        "required": ["fault_type"]
+      }
+    },
+    {
+      "name": "fpga_telemetry_config",
+      "description": "Configure telemetry stream: rate, channels, encoding.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "rate_hz": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 100.0,
+            "default": 1.5625
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["HEXAGRAM", "GHOSTSPLAT", "CONTACTOR", "CHOKE", "SENSOR", "THERMAL", "FAULT", "ALL"]
+            }
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["BINARY", "JSON", "CBOR"],
+            "default": "BINARY"
+          },
+          "destination": {
+            "type": "string",
+            "enum": ["MCP_CATCHING", "D1_AUDIT", "KV_DELTA", "SSE_STREAM"],
+            "default": "MCP_CATCHING"
+          }
+        }
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "uri": "fpga://hexagram/state",
+      "name": "Hexagram State",
+      "description": "Current hexagram ID, yao lines, vibe mode, and thermal variance",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://ghostsplat/field",
+      "name": "GhostSplat Thermal Field",
+      "description": "Predicted thermal field with segment heat, trend, saturation mask",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://contactor/status",
+      "name": "Contactor Status",
+      "description": "Real-time contactor state machine status for all 10 channels",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://choke/parameters",
+      "name": "Choke Driver Parameters",
+      "description": "Current PWM duty, phase, and frequency for all 5 channels",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://sensor/raw",
+      "name": "Raw Sensor ADC",
+      "description": "Unprocessed ADC values from all thermal, voltage, current, pressure, and salt sensors",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://telemetry/stream",
+      "name": "Telemetry Stream",
+      "description": "Live telemetry packet stream (SSE/WebSocket when connected)",
+      "mimeType": "application/octet-stream"
+    },
+    {
+      "uri": "fpga://fault/log",
+      "name": "Fault Log",
+      "description": "Circular fault history buffer with timestamps and codes",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://boot/progress",
+      "name": "Boot Progress",
+      "description": "Current boot phase, elapsed time, and phase-specific status",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://personality/card",
+      "name": "Personality Card",
+      "description": "Currently pinned personality archetype and its thermal parameters",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "fpga://safety/status",
+      "name": "Safety Status",
+      "description": "Safety interlock state: safety_ok, emergency flags, watchdog status",
+      "mimeType": "application/json"
+    }
+  ],
+
+  "telemetry_packet_format": {
+    "description": "Binary packet emitted by TELEMETRY_ENCODER.vhd, consumed by MCP Catching Layer",
+    "endianness": "little",
+    "header": {
+      "magic": { "offset": 0, "size": 4, "value": "0x504F4732", "description": "POG2 magic" },
+      "version": { "offset": 4, "size": 1, "value": "0x01", "description": "Packet format version" },
+      "channel_mask": { "offset": 5, "size": 1, "description": "Bitmap of included channels" },
+      "sequence": { "offset": 6, "size": 2, "description": "Packet sequence counter" },
+      "timestamp": { "offset": 8, "size": 4, "description": "Tick count since boot" },
+      "hexagram_id": { "offset": 12, "size": 1, "description": "Current hexagram state" },
+      "vibe_mode": { "offset": 13, "size": 1, "description": "Personality archetype" },
+      "reserved": { "offset": 14, "size": 2 }
+    },
+    "payload": {
+      "ghostsplat_field": {
+        "offset": 16,
+        "size": 16,
+        "fields": {
+          "segment_heat": { "offset": 0, "size": 10, "type": "uint16[5]", "scale": "0.0625 K/LSB" },
+          "segment_trend": { "offset": 10, "size": 6, "type": "int6[5]", "scale": "1 K/tick/LSB" },
+          "saturation_mask": { "offset": 16, "size": 1, "type": "uint8" },
+          "global_pulse": { "offset": 17, "size": 4, "type": "uint32" },
+          "prediction_horizon": { "offset": 21, "size": 1, "type": "uint8" },
+          "confidence": { "offset": 22, "size": 2, "type": "uint16", "scale": "1/65535 per LSB" }
+        }
+      },
+      "sensor_snapshot": {
+        "offset": 32,
+        "size": 20,
+        "fields": {
+          "thermal_adc": { "offset": 0, "size": 10, "type": "uint16[5]", "scale": "0.0625 K/LSB" },
+          "bus_voltage": { "offset": 10, "size": 2, "type": "uint16", "scale": "0.1 V/LSB" },
+          "bus_current": { "offset": 12, "size": 2, "type": "uint16", "scale": "0.1 A/LSB" },
+          "plenum_pressure": { "offset": 14, "size": 2, "type": "uint16", "scale": "0.001 atm/LSB" },
+          "salt_hydration": { "offset": 16, "size": 2, "type": "uint16", "scale": "0.01/LSB" },
+          "sensor_fault_mask": { "offset": 18, "size": 2, "type": "uint16" }
+        }
+      },
+      "contactor_status": {
+        "offset": 52,
+        "size": 4,
+        "fields": {
+          "state_vector": { "offset": 0, "size": 4, "type": "uint32", "description": "10× 3-bit states packed" },
+          "target_vector": { "offset": 4, "size": 2, "type": "uint16" }
+        }
+      },
+      "choke_status": {
+        "offset": 56,
+        "size": 8,
+        "fields": {
+          "duty_cycle": { "offset": 0, "size": 10, "type": "uint16[5]", "scale": "100/4095 %/LSB" },
+          "phase_offset": { "offset": 10, "size": 5, "type": "uint8[5]", "scale": "360/255 deg/LSB" },
+          "frequency": { "offset": 15, "size": 2, "type": "uint16", "scale": "1 Hz/LSB" }
+        }
+      }
+    },
+    "footer": {
+      "crc32": { "offset": 64, "size": 4, "description": "IEEE 802.3 CRC-32" },
+      "terminator": { "offset": 68, "size": 4, "value": "0xDEADBEEF" }
+    },
+    "total_size": 72
+  },
+
+  "epistemic_rules": {
+    "description": "Directional data flow enforcement matching software EpistemicValidator",
+    "tiers": ["EXECUTION", "CAUSAL", "INTERPRETATION", "POLICY"],
+    "allowed_transitions": {
+      "EXECUTION": ["CAUSAL"],
+      "CAUSAL": ["INTERPRETATION"],
+      "INTERPRETATION": [],
+      "POLICY": ["EXECUTION"]
+    },
+    "register_write_policy": {
+      "EXECUTION": ["CONTROL", "CONTACTOR_TARGET", "CHOKE_DUTY", "CHOKE_PHASE", "BOOT_CONTROL", "FAULT_INJECT"],
+      "CAUSAL": ["YAO_LINES", "VIBE_MODE", "THERMAL_VARIANCE", "PERSONALITY_CARD", "LIMP_MODE"],
+      "INTERPRETATION": ["TELEMETRY_RATE", "TELEMETRY_CONFIG", "INTERRUPT_MASK"],
+      "POLICY": ["STANDALONE_MODE", "STANDALONE_PROFILE", "STANDALONE_TIMEOUT", "CRIT_TIMEOUT", "GLOBAL_RESET"]
+    },
+    "cognitive_immunology": {
+      "chaos_states": ["OldYin", "OldMixed"],
+      "blocked_actions": ["fpga_contactor_command", "fpga_choke_set", "fpga_hexagram_set"],
+      "override_requires": "POLICY tier + explicit override flag"
+    }
+  }
+}

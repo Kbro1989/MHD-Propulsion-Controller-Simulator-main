@@ -1,0 +1,128 @@
+{
+  "tools": [
+    {
+      "name": "getHexagram",
+      "description": "Returns the active Hexagram state representing the current operational FSM state of the system.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "number", "description": "Numeric hexagram state code (0-7)" },
+          "label": { "type": "string", "description": "Readable name of the active hexagram loop" }
+        }
+      }
+    },
+    {
+      "name": "getState",
+      "description": "Returns the complete global telemetry, biases, and simulator state of the co-processor.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "tickCounter": { "type": "number" },
+          "currentHexagram": { "type": "number" },
+          "avgElectrodeTemp": { "type": "number" },
+          "plenumPressure": { "type": "number" },
+          "busCurrentA": { "type": "number" },
+          "symmetryOk": { "type": "boolean" },
+          "activeFaultCodes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    {
+      "name": "getHealth",
+      "description": "Calculates and returns the active health status, failure codes, and overall health score.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["NOMINAL", "DEGRADED", "CRITICAL"] },
+          "faultCodes": { "type": "array", "items": { "type": "string" } },
+          "score": { "type": "number", "description": "Overall percentage score (0-100)" }
+        }
+      }
+    },
+    {
+      "name": "getNodeHealth",
+      "description": "Scans all 4 hardware logic gates inside the switchboard sub-station and returns latency/status values.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "testerStatus": { "type": "string" },
+          "nodes": { "type": "array" },
+          "systemSummary": { "type": "string" }
+        }
+      }
+    }
+  ],
+  "capabilities": {
+    "forensics": {
+      "inputsOutputs": [
+        {
+          "name": "Electrode Temperature",
+          "type": "analog_input",
+          "register": "0x43C00A14",
+          "unit": "Kelvin (K)",
+          "description": "Active thermal sensor on the propulsion nozzle electrodes."
+        },
+        {
+          "name": "Plenum Gas Pressure",
+          "type": "analog_input",
+          "register": "0x43C00400",
+          "unit": "atmospheres (atm)",
+          "description": "Static pressure build-up within the MHD plenum enclosure."
+        },
+        {
+          "name": "DC Bus Current",
+          "type": "analog_input",
+          "register": "0x43C00328",
+          "unit": "Amperes (A)",
+          "description": "Current flowing through the main electromagnet inductive choke."
+        },
+        {
+          "name": "Choke Freq & Contactor Bits",
+          "type": "digital_i_o",
+          "register": "0x43C00204",
+          "unit": "bitfield",
+          "description": "Configuration states and gate drive pulses."
+        },
+        {
+          "name": "Telemetry CSV Export",
+          "type": "data_output",
+          "format": "text/csv",
+          "description": "Forensic data buffer export of high speed UART diagnostics."
+        }
+      ],
+      "toolUsages": [
+        {
+          "command": "sh /memory/check_symmetry_lock.sh",
+          "environment": "ssh root@node-ollama",
+          "description": "Verifies spatial and thermal symmetries on the secondary target core."
+        },
+        {
+          "command": "tsx /memory/reset_axis_boundaries.ts",
+          "environment": "npx local-node",
+          "description": "Forcibly resets AXI-Lite boundary constraints on memory-mapped controllers."
+        },
+        {
+          "command": "ollama create pog2-pedagogy",
+          "environment": "Ollama CLI",
+          "description": "Compiles raw training text into gemma4 instruction models."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "targets": {
+    "local_ollama": { "type": "model", "host": "localhost:11434", "healthy": false, "latency_ms": 0, "cost_per_req": 0 },
+    "cloudflare_edge": { "type": "worker", "host": "pog2.workers.dev", "healthy": false, "latency_ms": 0, "cost_per_req": 0 },
+    "fpga_zu7ev": { "type": "hardware", "host": "0x43C0_0000", "healthy": false, "latency_ms": 4, "cost_per_req": 0 },
+    "yoaostate_model": { "type": "compressed", "host": "localhost:11434", "model": "pog2-yaostate", "healthy": false, "latency_ms": 0, "cost_per_req": 0 }
+  },
+  "last_sync": 0,
+  "version": "1.1.0"
+}

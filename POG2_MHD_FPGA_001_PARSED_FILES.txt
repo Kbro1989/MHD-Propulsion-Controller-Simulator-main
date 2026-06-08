@@ -1,0 +1,440 @@
+
+================================================================================
+POG2-MHD-PROP-001 Rev 1.0
+PARSED DOWNLOAD LINK FILES — GROUND TRUTH VERIFICATION
+2026-06-05
+================================================================================
+
+════════════════════════════════════════════════════════════════════════════════
+PART 1: HDL FILES (VHDL + SystemVerilog)
+════════════════════════════════════════════════════════════════════════════════
+
+FILE 1: POG2_MHD_FPGA_001.vhd — TOP-LEVEL STRUCTURAL NETLIST
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              874
+  Bytes:              40,621
+  Entity:             POG2_MHD_FPGA_TOP
+  Architecture:       STRUCTURAL
+
+  STRUCTURAL FEATURES:
+    Processes:          7 (reset sync, tick gen, IMU handler, safety interlocks,
+                            boot FSM, CRIT timeout, electrical reg)
+    Pure Functions:     0 (top-level wiring only)
+    Generate Blocks:    0
+    Constants:          30
+    Signal Decls:       59
+    Type Decls:         16
+
+  PORTS:
+    Input:              34
+    Output:             28
+    Inout:              0
+
+  KEY CAPABILITIES:
+    ✅ Reset (active-low)
+    ✅ Clock (250 MHz clk_250m)
+    ✅ Tick Strobe (640 ms metabolic rhythm)
+    ✅ State Machine (7-state boot sequence)
+
+  COMPONENT INSTANTIATIONS: 4 of 7 declared (CHOKE_DRIVER, HEXAGRAM_STATE_MACHINE,
+    GHOSTSPLAT_PREDICTOR, plus internal processes for CONTACTOR_SEQUENCER logic)
+
+  STATUS: Top-level integration fabric. Wires all subsystems together.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 2: HEXAGRAM_STATE_MACHINE.vhd — 64-STATE CONTROL CORE
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              536
+  Bytes:              23,424
+  Entity:             HEXAGRAM_STATE_MACHINE
+  Architecture:       BEHAVIORAL
+
+  STRUCTURAL FEATURES:
+    Processes:          3 (state register, next-state logic, fault compute)
+    Pure Functions:     16 (is_valid_transition, default_next_state,
+                            resolve_target, compute_faults, etc.)
+    Generate Blocks:    0
+    Constants:          21
+    Signal Decls:       8
+    Type Decls:         0
+
+  PORTS:
+    Input:              14 (clk, reset_n, tick_strobe, electrical_reg,
+                            safety_ok, override, sensor_data, etc.)
+    Output:             7 (hexagram_state, fault_flags, state_valid,
+                            target_cmd, etc.)
+
+  KEY CAPABILITIES:
+    ✅ Reset (active-low)
+    ✅ Clock (250 MHz)
+    ✅ Tick Strobe (640 ms)
+    ✅ State Machine (64 states, 6 yao lines, 28 valid transitions)
+
+  STATE SPACE:
+    Hexagram states:    64 (6-bit yao encoding)
+    Valid transitions:  28 (constraint matrix)
+    Fault flags:        46-bit vector (8 core + 38 reserved)
+
+  STATUS: The CNS. Central nervous system of the propulsion module.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 3: GHOSTSPLAT_PREDICTOR.vhd — ADAPTIVE THERMAL PREDICTOR
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              535
+  Bytes:              24,287
+  Entity:             GHOSTSPLAT_PREDICTOR
+  Architecture:       PIPELINED_FSM
+
+  STRUCTURAL FEATURES:
+    Processes:          3 (input latch, Hamiltonian compute, Taylor FSM)
+    Pure Functions:     24 (q16_mul, q16_div, q16_abs, sensor_to_q16_temp,
+                            thermal_state_from_temp, compute_h_elec,
+                            compute_h_therm, compute_h_fluid,
+                            compute_h_cross_et, compute_h_cross_ef,
+                            relative_change, factorial_q16, etc.)
+    Generate Blocks:    0
+    Constants:          9
+    Signal Decls:       27
+    Type Decls:         1 (Taylor order enum)
+
+  PORTS:
+    Input:              11 (state, sensors, electrical, clk, reset_n, tick_strobe)
+    Output:             5 (predicted_temp, taylor_order, prediction_valid,
+                            decoherence_rate, thermal_state)
+
+  KEY CAPABILITIES:
+    ✅ Reset (active-low)
+    ✅ Clock (250 MHz)
+    ✅ Tick Strobe (640 ms)
+    ✅ State Machine (6-stage Taylor expansion FSM)
+
+  PREDICTION HORIZON: 3 ticks = 1.92 seconds
+  ADAPTIVE ORDER:     2nd → 5th order Taylor, converges at 5% threshold
+  HAMILTONIAN TERMS:  5 (H_elec + H_therm + H_fluid + H_cross_et + H_cross_ef)
+  FIXED-POINT MATH:   Q16.16 format throughout
+
+  STATUS: Forward-looking thermal estimator. Pre-stages buffers before spikes arrive.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 4: CHOKE_DRIVER.vhd — 5-CHANNEL RESONANT PWM
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              430
+  Bytes:              18,562
+  Entity:             CHOKE_DRIVER
+  Architecture:       behavioral
+
+  STRUCTURAL FEATURES:
+    Processes:          7 (NCO phase acc, sine LUT lookup, PWM comparator,
+                            dead-time insertion, frequency lock detector,
+                            output registers, debug)
+    Pure Functions:     5 (sine_lookup, apply_tune, is_freq_locked, etc.)
+    Generate Blocks:    2 (gen_dead_time for 5 channels, gen_pwm_match)
+    Constants:          7
+    Signal Decls:       21
+    Type Decls:         4
+
+  PORTS:
+    Input:              5 (clk, reset_n, enable, duty_cycle, freq_tune)
+    Output:             6 (gate_h[4:0], gate_l[4:0], freq_unlock, pwm_active,
+                            nco_phase_out, sine_sample_out)
+
+  KEY CAPABILITIES:
+    ✅ Reset (active-low)
+    ✅ Clock (250 MHz)
+    ❌ Tick Strobe (continuous PWM, not tick-synchronized)
+    ❌ State Machine (NCO + PWM, not FSM-based)
+
+  PWM SPECIFICATIONS:
+    Carrier frequency:  6.5 kHz (bubble resonance, above sonar band)
+    Phase shift:        72° between channels (360°/5)
+    Dead time:          100 ns (25 cycles @ 250 MHz)
+    NCO:                32-bit phase accumulator, increment 0x1B4F5
+    Sine LUT:           256-entry quarter-wave symmetry, 8-bit signed
+    Frequency lock:     ±100 Hz tolerance, 1 ms sample window
+
+  STATUS: Acoustic signature control limb. Drives CO₂ transpiration membranes.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 5: POG2_MHD_FPGA_001_TB.sv — SYSTEMVERILOG VERIFICATION SUITE
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              665
+  Bytes:              25,267
+  Format:             SystemVerilog-2012 (no entity/architecture)
+
+  STRUCTURAL FEATURES:
+    Processes:          0 (SystemVerilog uses always blocks, not VHDL processes)
+    Pure Functions:     0
+    Generate Blocks:    0
+    Constants:          0 (uses `define and localparam)
+    Signal Decls:       0 (uses logic declarations)
+    Type Decls:         0
+
+  KEY CAPABILITIES:
+    ✅ Reset (active-low reset_n)
+    ✅ Clock (250 MHz clk generation)
+    ❌ Tick Strobe (testbench generates its own)
+    ❌ State Machine (testbench is procedural, not FSM)
+
+  TEST CASES:         10
+    1. Boot Sequence (Reset → DARK_IRON → STEALTH_IDLE)
+    2. State Transition Matrix (8 key hexagram states)
+    3. Electrical Register 4-State (OFF→ARMED→ACTIVE→SHED→OFF)
+    4. Contactor Arc Suppression (pre-charge, checkerboard)
+    5. GhostSplat Adaptive Taylor (thermal spike, convergence)
+    6. IMU Decoherence Spike (high-G → forced LIMP)
+    7. Safety Interlock — Thermal (330 K → CRIT→LIMP)
+    8. Choke Driver 6.5 kHz PWM (edge counting, phase shift)
+    9. Telemetry 64-bit Packet (UART capture at 115200 baud)
+    10. Full Mission Profile (Boot→Stealth→Transit→Combat→Recovery→Purge)
+
+  COVERAGE GROUPS:    4
+    • cg_hexagram_states (8 states × 4 electrical bins)
+    • cg_safety_interlocks (thermal × current × pressure × SiC)
+    • cg_ghostsplat (Taylor order 2–5 × prediction valid)
+    • cg_contactor (all-open, all-closed, checkerboard, arc fault)
+
+  TASKS:              7
+    • axi_write, axi_read, set_sensors_normal, set_sensors_thermal_crit,
+      set_sensors_pressure_low, capture_telemetry, imu_decoherence_spike
+
+  STATUS: Verification suite. 10 tests, 4 coverage groups, 7 tasks.
+
+════════════════════════════════════════════════════════════════════════════════
+PART 2: SPECIFICATION FILES (Text)
+════════════════════════════════════════════════════════════════════════════════
+
+FILE 6: POG2_MHD_PROP_001_Rev1_0_Complete_Specification.txt
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              841
+  Bytes:              40,812
+  Sections:           26 (header-delimited)
+  Table Rows:         146
+  Equations:          0 (equations are inline, not LaTeX)
+
+  CONTENT:
+    1.0  System Overview & Design Philosophy
+    2.0  Fluid Dynamics & Electromagnetic Foundations
+    3.0  Electrode Architecture & Transpiration Physics
+    4.0  Cascaded Thermal Architecture
+    5.0  High-Voltage Electrical & Switching Subsystems
+    6.0  Central Nervous System & Deterministic Control Logic
+    7.0  Signature Suppression & Shielding Architecture
+    8.0  Full Initialization Sequence Matrix
+    9.0  Bill of Materials & Acceptance Criteria
+    10.0 Verification Matrices & Safety Margins
+    11.0 Appendices (Equations, Constants, State Tables)
+
+  STATUS: Master technical specification. Authoritative build reference.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 7: POG2_MHD_PROP_001_Consumables_Constants_Outputs.txt
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              349
+  Bytes:              14,262
+  Sections:           19
+  Table Rows:         0
+  Equations:          0
+
+  CONTENT:
+    Section 1: Consumables (Dry Ice, Salt Hydrate, Seawater)
+    Section 2: Constants (Fluid, Thermal, Magnetic, Geometric, Material,
+                Electrical, Control, Boundary, Speed Regimes)
+    Section 3: Outputs (Thrust, Acoustic, Magnetic, Thermal, Telemetry,
+                Power Recovery)
+    Section 4: Waste Streams (CO₂, Carbonate, Electrolytic Gas, Thermal,
+                Distilled Water)
+    Section 5: State-to-Output Mapping (all 8 states)
+    Section 6: Quick Reference (one-line consolidated numbers)
+
+  STATUS: Reference sheet. All consumables, constants, outputs catalogued.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 8: POG2_MHD_PROP_001_Market_Map.txt
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              498
+  Bytes:              22,505
+  Sections:           24
+  Table Rows:         50
+  Equations:          40 (LaTeX-style pricing formulas)
+
+  CONTENT:
+    Section 1: Primary Buyers (Sovereign, Defense Primes, Deep-Tech)
+    Section 2: Secondary Buyers (7 Submodules with buyer lists and ROI)
+    Section 3: Combined Revenue Model ($3.2B → $11.4B over 10 years)
+    Section 4: Why They Pay (incentive architecture by tier)
+    Section 5: Deal Structure & Sovereignty Retention
+    Section 6: Buyer Qualification Criteria
+    Section 7: Competitive Landscape
+    Section 8: Risk Factors & Mitigation
+    Section 9: Executive Summary
+
+  STATUS: Business architecture. Revenue model, pricing, deal structures.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 9: POG2_MHD_FPGA_001_BUILD_STATUS.txt
+────────────────────────────────────────────────────────────────────────────────
+  Lines:              359
+  Bytes:              16,396
+  Sections:           28
+  Table Rows:         68
+  Equations:          0
+
+  CONTENT:
+    Module summaries for all 7 HDL files
+    Critical timing paths (6 paths, all PASS)
+    State space summary (4 layers)
+    Build status: COMPLETE
+    Download links for all files
+
+  STATUS: Build verification. Module map, timing, state space.
+
+════════════════════════════════════════════════════════════════════════════════
+PART 3: IMAGE FILES (PNG Schematics)
+════════════════════════════════════════════════════════════════════════════════
+
+FILE 10: POG2_MHD_PROP_001_Rev1_0_System_Schematic.png
+────────────────────────────────────────────────────────────────────────────────
+  Size:               770,883 bytes (752.8 KB)
+  Resolution:         24×32 inches @ 150 DPI
+  Zones:              6 (Magnetic Shielding, MHD Channel, Electrical,
+                       Thermal Cascade, CO₂ Manifold, Control System)
+
+  CONTENT:
+    Zone 1: Three-stage flux-damping cascade (Si-steel → gap → mu-metal)
+    Zone 2: 5-segment Halbach array MHD thruster channel
+    Zone 3: 5,000 V DC segmented electrical architecture
+    Zone 4: Four-tier cascaded thermal system
+    Zone 5: CO₂ transpiration & fluid manifold
+    Zone 6: Thermal CNS / HexagramManager / GhostSplat
+    Bottom: BOM & acceptance criteria (10 line items)
+
+  STATUS: Visual system schematic. Cross-referenced to text specification.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 11: POG2_MHD_PROP_001_Consumables_Constants_Outputs.png
+────────────────────────────────────────────────────────────────────────────────
+  Size:               806,712 bytes (787.8 KB)
+  Resolution:         20×28 inches @ 150 DPI
+  Zones:              6 (Consumables, Constants grid, Outputs, Waste,
+                       State mapping, Quick reference)
+
+  CONTENT:
+    Consumables: Dry ice (10,000 kg), salt (279 kg), seawater (unlimited)
+    Constants: 9 sub-panels (fluid, thermal, magnetic, geometric, material,
+               electrical, control, boundary, speed)
+    Outputs: Thrust, acoustic, magnetic, thermal, telemetry, power recovery
+    Waste: CO₂, carbonate, electrolytic gas, thermal rejection, distilled water
+    State mapping: All 8 states with output summaries
+    Quick reference: One-line consolidated numbers
+
+  STATUS: Visual reference sheet. All consumables, constants, outputs.
+
+────────────────────────────────────────────────────────────────────────────────
+FILE 12: POG2_MHD_PROP_001_Market_Map.png
+────────────────────────────────────────────────────────────────────────────────
+  Size:               697,469 bytes (681.1 KB)
+  Resolution:         20×30 inches @ 150 DPI
+  Zones:              5 (Primary buyers, Secondary buyers, Revenue model,
+                       Incentives, Deal structure)
+
+  CONTENT:
+    Primary: 3 buyer categories with tech sale + stack lease pricing
+    Secondary: 7 submodules with buyer lists, prices, 10-year revenue
+    Revenue: $3.2B → $11.4B waterfall (primary + secondary + leases + royalties)
+    Incentives: Why each tier pays (strategic, industrial, financial)
+    Deal structure: 4 deal types with sovereignty retention strategy
+
+  STATUS: Visual market map. Business architecture, pricing, deal flow.
+
+════════════════════════════════════════════════════════════════════════════════
+PART 4: CROSS-REFERENCE MATRIX
+════════════════════════════════════════════════════════════════════════════════
+
+FILE CROSS-REFERENCES:
+
+| File | Referenced By | References To |
+|------|---------------|---------------|
+| POG2_MHD_FPGA_001.vhd | TB.sv | HEXAGRAM_SM, GHOSTSPLAT, CHOKE_DRIVER |
+| HEXAGRAM_STATE_MACHINE.vhd | Top-level, TB.sv | None (leaf node) |
+| GHOSTSPLAT_PREDICTOR.vhd | Top-level, TB.sv | None (leaf node) |
+| CHOKE_DRIVER.vhd | Top-level, TB.sv | None (leaf node) |
+| POG2_MHD_FPGA_001_TB.sv | None (testbench) | All HDL files |
+| Complete_Specification.txt | All files | None (authority doc) |
+| Consumables_Constants_Outputs.txt | Specification | Specification |
+| Market_Map.txt | Specification | Specification |
+| BUILD_STATUS.txt | All files | All files |
+| System_Schematic.png | Specification | Specification |
+| Consumables_Constants_Outputs.png | Consumables text | Consumables text |
+| Market_Map.png | Market text | Market text |
+
+PARAMETER CONSISTENCY CHECK:
+
+| Parameter | Spec | CCO | Market | HDL | Status |
+|-----------|------|-----|--------|-----|--------|
+| 640 ms tick | ✅ | ✅ | N/A | ✅ | CONSISTENT |
+| 47-tick CRIT timeout | ✅ | ✅ | N/A | ✅ | CONSISTENT |
+| 6.5 kHz PWM | ✅ | ✅ | N/A | ✅ | CONSISTENT |
+| 5,000 V DC | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| 10,000 kg dry ice | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| 279 kg salt | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| 2.3 T Halbach | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| 65 dB shielding | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| 10,870 A total | ✅ | ✅ | N/A | N/A | CONSISTENT |
+| $3.2B → $11.4B revenue | N/A | N/A | ✅ | N/A | CONSISTENT |
+
+════════════════════════════════════════════════════════════════════════════════
+PART 5: MISSING FILES (DECLARED BUT NOT ON DISK)
+════════════════════════════════════════════════════════════════════════════════
+
+The following files were declared in the user's uploaded inventory but are
+NOT present on disk:
+
+| # | File | Declared Lines | Declared Bytes | Status |
+|---|------|----------------|----------------|--------|
+| 3 | CONTACTOR_SEQUENCER.vhd | 365 | 15,932 | ❌ MISSING |
+| 5 | SENSOR_ACQUISITION.vhd | 338 | 15,408 | ❌ MISSING |
+| 6 | TELEMETRY_ENCODER.vhd | 241 | 10,839 | ❌ MISSING |
+| 7 | AXI4_LITE_SLAVE.vhd | 321 | 15,347 | ❌ MISSING |
+
+NOTE: The top-level POG2_MHD_FPGA_001.vhd declares 7 components but only
+4 are instantiated in the actual file. The missing 3 (CONTACTOR_SEQUENCER,
+SENSOR_ACQUISITION, TELEMETRY_ENCODER, AXI4_LITE_SLAVE) are declared as
+components but may be wired internally as processes rather than separate
+entities, or they may be stubs awaiting implementation.
+
+The user's uploaded inventory claims these files exist with specific line
+and byte counts, but they are not present in the output directory. This
+suggests either:
+  1. The files were generated in a previous session and not persisted
+  2. The user's inventory is aspirational (planned but not yet built)
+  3. The files exist in a different directory
+
+════════════════════════════════════════════════════════════════════════════════
+PART 6: SUMMARY STATISTICS
+════════════════════════════════════════════════════════════════════════════════
+
+FILES ON DISK:        12 total
+  HDL files:          5 (4 VHDL + 1 SystemVerilog)
+  Text files:         4
+  Image files:        3
+
+TOTAL LINES:          4,173 (HDL only: 3,040)
+TOTAL BYTES:          324,054 (HDL only: 132,161)
+
+HDL BREAKDOWN:
+  VHDL:               2,375 lines (3 files)
+  SystemVerilog:      665 lines (1 file)
+
+SPECIFICATION BREAKDOWN:
+  Complete Spec:      841 lines
+  Consumables/CCO:    349 lines
+  Market Map:         498 lines
+  Build Status:       359 lines
+
+BUILD STATUS:         4 of 7 HDL modules on disk (57%)
+                      All 4 text specification files on disk (100%)
+                      All 3 image files on disk (100%)
+
+════════════════════════════════════════════════════════════════════════════════
+END OF PARSED DOWNLOAD LINK FILES
+════════════════════════════════════════════════════════════════════════════════
