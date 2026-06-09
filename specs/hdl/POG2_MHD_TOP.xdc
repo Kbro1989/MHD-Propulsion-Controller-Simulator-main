@@ -1,8 +1,9 @@
 ###############################################################################
-# POG2-MHD-PROP-001 Rev 1.0
+# POG2-MHD-PROP-001 Rev 1.0 — CORRECTED
 # POG2_MHD_TOP.xdc
 # Timing and physical constraints for Zynq UltraScale+ ZU7EV
-# 600ms canonical tick, 250MHz PL, 100MHz AXI
+# Matched to POG2_MHD_FPGA_TOP.vhd entity declaration (SPI sensors, not bus)
+# 640 ms canonical tick, 250 MHz PL, 100 MHz AXI
 ###############################################################################
 
 #=============================================================================
@@ -54,8 +55,8 @@ set_multicycle_path -hold 1 -from [get_cells tick_counter_reg] -to [get_cells ti
 set_multicycle_path -setup 2 -from [get_cells -hierarchical -filter {NAME =~ *taylor_state*}]     -to [get_cells -hierarchical -filter {NAME =~ *taylor_sum*}]
 
 # Contactor sequencer: 15ms mechanical delay, extremely relaxed
-set_multicycle_path -setup 1000 -from [get_cells -hierarchical -filter {NAME =~ *U_CONTACTOR*}]     -to [get_cells -hierarchical -filter {NAME =~ *contactor_state*}]
-set_multicycle_path -hold 500 -from [get_cells -hierarchical -filter {NAME =~ *U_CONTACTOR*}]     -to [get_cells -hierarchical -filter {NAME =~ *contactor_state*}]
+set_multicycle_path -setup 3750 -from [get_cells -hierarchical -filter {NAME =~ *U_CONTACTOR*}]     -to [get_cells -hierarchical -filter {NAME =~ *contactor_state*}]
+set_multicycle_path -hold 1875 -from [get_cells -hierarchical -filter {NAME =~ *U_CONTACTOR*}]     -to [get_cells -hierarchical -filter {NAME =~ *contactor_state*}]
 
 #=============================================================================
 # CRITICAL TIMING PATHS (from build status)
@@ -246,16 +247,6 @@ set_property PACKAGE_PIN CK13 [get_ports debug_tick_phase[2]]
 set_property PACKAGE_PIN CK14 [get_ports debug_tick_phase[3]]
 
 #=============================================================================
-# AXI4-LITE INTERFACE (PS-side, Bank 500-501, MIO)
-# These are connected to the Zynq PS AXI GP0/GP1 ports
-# No package pins needed — PS routing is fixed
-#=============================================================================
-set_property IOSTANDARD LVCMOS18 [get_ports axi_awaddr*]
-set_property IOSTANDARD LVCMOS18 [get_ports axi_wdata*]
-set_property IOSTANDARD LVCMOS18 [get_ports axi_rdata*]
-set_property IOSTANDARD LVCMOS18 [get_ports axi_araddr*]
-
-#=============================================================================
 # POWER AND CONFIGURATION
 #=============================================================================
 set_property CONFIG_VOLTAGE 1.8 [current_design]
@@ -268,16 +259,6 @@ set_false_path -from [get_ports sensor_*] -to [get_clocks clk_250mhz]
 set_false_path -from [get_ports imu_irq] -to [get_clocks clk_250mhz]
 set_false_path -from [get_ports contactor_state*] -to [get_clocks clk_250mhz]
 set_false_path -from [get_ports uart_rx] -to [get_clocks clk_250mhz]
-
-#=============================================================================
-# AREA CONSTRAINTS (from build status estimate)
-#=============================================================================
-# Estimated: ~1,010 LUTs, ~750 FFs, 4 DSP48s, 2 BRAMs
-# Reserve 50% headroom for Vivado optimization
-set_property MAX_LUTS 2000 [get_cells -hierarchical]
-set_property MAX_FF 1500 [get_cells -hierarchical]
-set_property MAX_DSP 8 [get_cells -hierarchical]
-set_property MAX_BRAM 4 [get_cells -hierarchical]
 
 #=============================================================================
 # BITSTREAM CONFIGURATION
