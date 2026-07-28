@@ -1,5 +1,5 @@
 {
-  "name": "mhdpropulsioncontrollersimulator",
+  "name": "mhdpropulsioncontrollersimulatormain",
   "main": "server.ts",
   "compatibility_date": "2024-09-23",
   "compatibility_flags": [
