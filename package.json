@@ -1,5 +1,4 @@
 {
-  // wrangler.jsonc
 "name": "mhdpropulsioncontrollersimulator",
   "private": true,
   "version": "0.0.0",
